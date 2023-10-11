@@ -44,7 +44,7 @@
         The important bit is that they are each a grouping or state of different interface elements that need to be on the screen at different times.
 
         We'll call them "scenes" – if only because they're going up onto the Pixi.js stage object when we need them.
-    * /
+    */
 
     //
     // Let's create a few really boring scenes using Pixi.js Containers
@@ -100,7 +100,7 @@
 
         The easiest, ugliest way to swap between scenes, would be to assign some code to each button to pull the current scene off the stage and replace it with another.
 
-    * /
+    */
 
     //
     // Swapping between scenes
@@ -122,7 +122,7 @@
 
         It would be better if we could build in a nice fade transition, though, right?
 
-    * /
+    */
 
     nextButton.onclick = async () => {
         //Fade out current scene
@@ -136,7 +136,7 @@
         //Fade it in
         await Animate.to(scene2,{alpha:1,duration:500});
         //Reset the off-stage scene's alpha back
-        scene2.alpha = 1;
+        scene1.alpha = 1;
     }
 
     backButton.onclick = async () => {
@@ -158,7 +158,7 @@
 
         Or how about a swipe transition?
 
-    * /
+    */
 
     nextButton.onclick = async () => {
         //Set up next scene on the right
@@ -206,7 +206,7 @@
 
         Let's create a system for scene management.
 
-    * /
+    */
 
     //Let's call it the Director. It calls the shots.
     var Director = {
@@ -320,6 +320,12 @@
                 nextSceneStartX = 0;
                 nextSceneStartY = -app.view.height;
             }
+            else if (params.direction == "topleft"){
+                currentSceneEndX = -app.view.width;
+                currentSceneEndY = -app.view.height;
+                nextSceneStartX = app.view.width;
+                nextSceneStartY = app.view.height;
+            }
 
             //Set up next scene
             nextScene.x = nextSceneStartX;
@@ -351,17 +357,17 @@
 
         Now let's set up our prior scenes with the Director instead.
 
-    * /
+    */
 
     Director.addScene("first",scene1);
     Director.addScene("second",scene2);
 
     nextButton.onclick = () => {
-        Director.showScene("second");
+        Director.showScene("second", {transition: Director.swipe,direction:"topleft"});
     }
 
     backButton.onclick = () => {
-        Director.showScene("first");
+        Director.showScene("first", {transition: Director.swipe,direction:"topleft"});
     }
 
     /*
