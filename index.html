@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Meet The Fishes</title>
+
+        <!--
+
+        First note what we're loading in.
+
+        We could also do this the JavaScript Module route, but we'll learn about that later.
+
+    -->
+        <script src="https://pixijs.download/release/pixi.js"></script>
+        <script src="js/director.js"></script>
+        <script src="js/bezier.js"></script>
+        <script src="js/animate.js"></script>
+        <script src="js/ui_elements.js"></script>
+    </head>
+
+    <body>
+
+        <script>
+
+            //
+            // Basic setup
+            //
+
+            //The App
+            var app = new PIXI.Application({
+                width: 640,
+                height: 480,
+                backgroundColor: 0x000000
+            });
+            var stage = app.stage;
+            var view = app.view;
+
+            //Add view to the document
+            document.body.appendChild(app.view);
+
+            /*
+                Depending on the system or context, these can be called "scenes" "views" "pages" "panels" or all sorts of other things.
+        
+                The important bit is that they are each a grouping or state of different interface elements that need to be on the screen at different times.
+        
+                We'll call them "scenes" – if only because they're going up onto the Pixi.js stage object when we need them.
+            */
+
+            //
+            // Let's create a few really boring scenes using Pixi.js Containers
+            //
+
+
+
+            //SCENE 1
+            const scene1 = new PIXI.Container();
+
+            //Using our button object let's create a "next" button.
+            const nextButton = UI.Button(0, 0, "Next >");
+
+            //Let's place it in the bottom right-hand corner of the screen (regardless of size)
+            nextButton.x = app.view.width - nextButton.width;
+            nextButton.y = app.view.height - nextButton.height;
+
+            //And place it into the scene
+            scene1.addChild(nextButton);
+
+            //And let's add some text to tell us which scene we're on
+            const scene1Text = new PIXI.Text("Meet The Fishes", { fill: 0xFFFFFF });
+
+            //And place it into the scene
+            scene1.addChild(scene1Text);
+
+
+            //SCENE 2
+            const scene2 = new PIXI.Container();
+
+            //Using our button object let's create a "next" button.
+            const backButton = UI.Button(0, 0, "< Back");
+
+            //Let's place it in the bottom left-hand corner of the screen (regardless of size)
+            backButton.x = 0;
+            backButton.y = app.view.height - backButton.height;
+
+            //And place it into the scene
+            scene2.addChild(backButton);
+
+            //And let's also add some text to tell us which scene we're on
+            const scene2Text = new PIXI.Text("Scene 2", { fill: 0xFFFFFF });
+            //And place it into the scene
+            scene2.addChild(scene2Text);
+
+
+
+            const mainScreen = new PIXI.Container();
+            const mainScreenText = new PIXI.Text("Meet The Fishes", {
+                fill: 0XFFFFFF
+            }
+            );
+            mainScreenText.x = app.view.width / 2 - mainScreenText.width / 2;
+            mainScreenText.y = app.view.height / 2 - mainScreenText.height;
+
+            const fish1Button = UI.Button(0, 0, "Fish 1");
+            fish1Button.x = 0;
+            fish1Button.y = app.view.height - fish1Button.height;
+            const fish2Button = UI.Button(150, 150, "Fish 2");
+            fish2Button.x = app.view.width / 2 - fish2Button.width / 2;
+            fish2Button.y = app.view.height - fish2Button.height;
+            const fish3Button = UI.Button(300, 300, "Fish 3");
+            fish3Button.x = app.view.width - fish3Button.width;
+            fish3Button.y = app.view.height - fish3Button.height;
+
+            mainScreen.addChild(mainScreenText);
+            mainScreen.addChild(fish1Button);
+            mainScreen.addChild(fish2Button);
+            mainScreen.addChild(fish3Button);
+            //Now let's add the first scene to the stage
+            app.stage.addChild(mainScreen);
+
+
+
+
+            // Adding scenes to the director
+            // Director.addScene("first", scene1);
+            // Director.addScene("second", scene2);
+
+            Director.addScene(mainScreen);
+            // Adding event listeners to scene UI elements. 
+            nextButton.onclick = () => {
+                Director.showScene("second", { transition: Director.swipe, direction: "topleft" });
+            };
+
+            backButton.onclick = () => {
+                Director.showScene("first", { transition: Director.swipe, direction: "topleft" });
+            }
+
+
+
+            /*
+                This week's homework!
+        
+                Accept the assignment invite for Meet The Fish (when it goes up).
+        
+                Put together a multi-scened presentation to show off fictional profiles of 3 of *your* fish. (Replace the ones in the images folder here.)
+        
+                (Read up on the Graphics and Text display objects here:)
+                
+                    https://pixijs.download/dev/docs/PIXI.Graphics.html
+                    https://pixijs.download/dev/docs/PIXI.Text.html
+                
+                (They will help.)
+                
+                Each fish should be animated on their profile page in their own unique way.
+                
+                There should be – at least – a title screen, and one screen for each fish but bonus points for adding on more.
+        
+                Add to the button system so that the buttons look more aesthetic.
+        
+                Add in a new transition of your choice and implement it on one of your transitions.
+        
+            */
+
+        </script>
+
+    </body>
+
+</html>
