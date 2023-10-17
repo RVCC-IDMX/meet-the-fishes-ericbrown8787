@@ -19,6 +19,7 @@
         <script src="js/bezier.js"></script>
         <script src="js/animate.js"></script>
         <script src="js/ui_elements.js"></script>
+        <script type="text/javascript" src="js/fishes.js"></script>
     </head>
 
     <body>
@@ -41,59 +42,6 @@
             //Add view to the document
             document.body.appendChild(app.view);
 
-            /*
-                Depending on the system or context, these can be called "scenes" "views" "pages" "panels" or all sorts of other things.
-        
-                The important bit is that they are each a grouping or state of different interface elements that need to be on the screen at different times.
-        
-                We'll call them "scenes" – if only because they're going up onto the Pixi.js stage object when we need them.
-            */
-
-            //
-            // Let's create a few really boring scenes using Pixi.js Containers
-            //
-
-
-
-            //SCENE 1
-            const scene1 = new PIXI.Container();
-
-            //Using our button object let's create a "next" button.
-            const nextButton = UI.Button(0, 0, "Next >");
-
-            //Let's place it in the bottom right-hand corner of the screen (regardless of size)
-            nextButton.x = app.view.width - nextButton.width;
-            nextButton.y = app.view.height - nextButton.height;
-
-            //And place it into the scene
-            scene1.addChild(nextButton);
-
-            //And let's add some text to tell us which scene we're on
-            const scene1Text = new PIXI.Text("Meet The Fishes", { fill: 0xFFFFFF });
-
-            //And place it into the scene
-            scene1.addChild(scene1Text);
-
-
-            //SCENE 2
-            const scene2 = new PIXI.Container();
-
-            //Using our button object let's create a "next" button.
-            const backButton = UI.Button(0, 0, "< Back");
-
-            //Let's place it in the bottom left-hand corner of the screen (regardless of size)
-            backButton.x = 0;
-            backButton.y = app.view.height - backButton.height;
-
-            //And place it into the scene
-            scene2.addChild(backButton);
-
-            //And let's also add some text to tell us which scene we're on
-            const scene2Text = new PIXI.Text("Scene 2", { fill: 0xFFFFFF });
-            //And place it into the scene
-            scene2.addChild(scene2Text);
-
-
 
             const mainScreen = new PIXI.Container();
             const mainScreenText = new PIXI.Text("Meet The Fishes", {
@@ -103,22 +51,81 @@
             mainScreenText.x = app.view.width / 2 - mainScreenText.width / 2;
             mainScreenText.y = app.view.height / 2 - mainScreenText.height;
 
-            const fish1Button = UI.Button(0, 0, "Fish 1");
-            fish1Button.x = 0;
-            fish1Button.y = app.view.height - fish1Button.height;
-            const fish2Button = UI.Button(150, 150, "Fish 2");
-            fish2Button.x = app.view.width / 2 - fish2Button.width / 2;
-            fish2Button.y = app.view.height - fish2Button.height;
-            const fish3Button = UI.Button(300, 300, "Fish 3");
-            fish3Button.x = app.view.width - fish3Button.width;
-            fish3Button.y = app.view.height - fish3Button.height;
-
             mainScreen.addChild(mainScreenText);
-            mainScreen.addChild(fish1Button);
-            mainScreen.addChild(fish2Button);
-            mainScreen.addChild(fish3Button);
+            Director.addScene("mainScreen", mainScreen);
+            Director.showScene("mainScreen");
+            let fishCount = 0;
+            fishes.forEach(fish => {
+                const xPadding = 15;
+                const yPadding = 15;
+                // Create a button on the main screen for each fish in the fishes array.
+                const button = UI.Button(0, 0, `Fish ${fishCount + 1}`);
+                button.x = (app.view.width / fishes.length * fishCount) + button.width * .5;
+                button.y = app.view.height - button.height;
+                mainScreen.addChild(button);
+                fishCount += 1;
+
+                // Create a scene for each fish's profile
+                const scene = new PIXI.Container();
+                const fishText = new PIXI.Container();
+                fishText.y = yPadding
+                fishText.x = xPadding
+                
+                // Name
+                const fishName = new PIXI.Text(`Name: ${fish.name} `, {
+                    fill: 0XFFFFFF,
+                                        fontSize: 16
+                });
+
+                //Species
+                const fishSpecies = new PIXI.Container();
+                const common = new PIXI.Text(`Species: ${fish.species.common}`, {
+                    fill: 0XFFFFFF,
+                    fontSize: 16                   
+                });
+                const scientific = new PIXI.Text(fish.species.scientific, {
+                    fill: 0XFFFFFF,
+                    fontSize: 16
+                });
+                scientific.x = common.width + 10;
+                fishSpecies.addChild(common);
+                fishSpecies.addChild(scientific);
+
+                const fishDescription = new PIXI.Text(`Description: ${fish.description}`, {
+                    fill: 0XFFFFFF,
+                                        fontSize: 16,
+                    wordWrap: true,
+                    wordWrapWidth: app.view.width / 2
+                });
+                const backButton = UI.Button(0, 0, "<< Back");
+                backButton.y = app.view.height - backButton.height;
+
+                fishName.y = yPadding;
+                fishSpecies.y = fishName.y + fishSpecies.height + yPadding;
+                fishDescription.y = fishSpecies.y + fishSpecies.height + yPadding;
+                Director.addScene(fish.name, scene);
+                // Adding click listeners to buttons
+                button.onclick = () => {
+                    Director.showScene(fish.name, { transition: Director.swipe, direction: "topleft" });
+                };
+
+                backButton.onclick = () => {
+                    Director.showScene("mainScreen", { transition: Director.swipe, direction: "topleft" });
+                };
+
+                scene.addChild(backButton);
+                fishText.addChild(fishName);
+                fishText.addChild(fishSpecies);
+                fishText.addChild(fishDescription);
+                scene.addChild(fishText);
+            });
+
+
+            // mainScreen.addChild(fish1Button);
+            // mainScreen.addChild(fish2Button);
+            // mainScreen.addChild(fish3Button);
             //Now let's add the first scene to the stage
-            app.stage.addChild(mainScreen);
+            // app.stage.addChild(mainScreen);
 
 
 
@@ -127,15 +134,16 @@
             // Director.addScene("first", scene1);
             // Director.addScene("second", scene2);
 
-            Director.addScene(mainScreen);
-            // Adding event listeners to scene UI elements. 
-            nextButton.onclick = () => {
-                Director.showScene("second", { transition: Director.swipe, direction: "topleft" });
-            };
 
-            backButton.onclick = () => {
-                Director.showScene("first", { transition: Director.swipe, direction: "topleft" });
-            }
+            
+            // Adding event listeners to scene UI elements. 
+            // nextButton.onclick = () => {
+            //     Director.showScene("second", { transition: Director.swipe, direction: "topleft" });
+            // };
+
+            // backButton.onclick = () => {
+            //     Director.showScene("first", { transition: Director.swipe, direction: "topleft" });
+            // }
 
 
 

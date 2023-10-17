@@ -1,8 +1,6 @@
 ### Fish 1:
 
-Name:
-
-Species(Common): Buoyant Air Gulper
+Species(Common): Buoyant Aether Gulper
 
 Species(Binomial): Chilomycterus haustus
 
@@ -10,17 +8,13 @@ Description: This fish can't actually breathe underwater, but doesn't want anyon
 
 ### Fish 2:
 
-Name:
-
-Species(Common): Void-Hopping Singleton
+Species(Common): Plane-Hopping Singleton
 
 Species(Binomial): Xenolepomis solitus
 
 Description: A multiversal constant, only one individual of this species may be born in each timeline. A school of these fish is made up entirely of versions of the same individual, each one a refugee from a different doomed reality.
 
 ### Fish 3:
-
-Name:
 
 Species(Common): Abyssal Shrieker
 
