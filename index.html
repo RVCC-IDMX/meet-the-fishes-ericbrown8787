@@ -1,216 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meet The Fishes</title>
 
-    <!--
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Meet The Fishes</title>
+
+        <!--
 
         First note what we're loading in.
 
         We could also do this the JavaScript Module route, but we'll learn about that later.
 
     -->
-    <script src="https://pixijs.download/release/pixi.js"></script>
-    <script src="js/director.js"></script>
-    <script src="js/bezier.js"></script>
-    <script src="js/animate.js"></script>
-    <script src="js/ui_elements.js"></script>
-    <script type="text/javascript" src="js/fishes.js"></script>
-  </head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Pixelify+Sans&display=swap"
+            rel="stylesheet">
+        <script src="https://pixijs.download/release/pixi.js"></script>
+        <script src="js/director.js"></script>
+        <script src="js/bezier.js"></script>
+        <script src="js/animate.js"></script>
+        <script src="js/ui_elements.js"></script>
+        <script type="text/javascript" src="js/fishes.js"></script>
+    </head>
 
-  <body>
-    <script>
-      //
-      // Basic setup
-      //
+    <body>
+        <script>
+            //
+            // Basic setup
+            //
 
-      //The App
-      var app = new PIXI.Application({
-        width: 640,
-        height: 480,
-        backgroundColor: 0x000000,
-      });
-      var stage = app.stage;
-      var view = app.view;
+            //The App
+            var app = new PIXI.Application({
+                width: 640,
+                height: 480,
+                backgroundColor: 0x000000,
 
-      //Add view to the document
-      document.body.appendChild(app.view);
+            });
+            //Fix, or at least improve blurry text
+            PIXI.settings.ROUND_PIXELS = true;
+            var stage = app.stage;
+            var view = app.view;
 
-      const mainScreen = new PIXI.Container();
-      const mainScreenText = new PIXI.Text("Meet The Fishes", {
-        fill: 0xffffff,
-      });
-      mainScreenText.x = app.view.width / 2 - mainScreenText.width / 2;
-      mainScreenText.y = app.view.height / 2 - mainScreenText.height;
+            //Add view to the document
+            document.body.appendChild(app.view);
+            // Just storing info on each fish in a JS file for easy reference
 
-      mainScreen.addChild(mainScreenText);
-      Director.addScene("mainScreen", mainScreen);
-      Director.showScene("mainScreen");
-      let fishCount = 0;
-      fishes.forEach((fish) => {
-        const xPadding = 15;
-        const yPadding = 10;
 
-        // Create a button on the main screen for each fish in the fishes array.
-        const button = UI.Button(0, 0, `Fish ${fishCount + 1}`);
-        button.x =
-          (app.view.width / fishes.length) * fishCount + button.width * 0.5;
-        button.y = app.view.height - button.height;
-        mainScreen.addChild(button);
-        fishCount += 1;
+            const mainScreen = new PIXI.Container();
+            const mainScreenText = new PIXI.Text("Meet The Fishes", {
+                fill: 0xffffff,
+                fontSize: 50, fontFamily: "Pixelify Sans"
+            });
+            mainScreenText.x = app.view.width / 2 - mainScreenText.width / 2;
+            mainScreenText.y = app.view.height / 2 - mainScreenText.height;
 
-        // Create a scene for each fish's profile
-        const scene = new PIXI.Container();
-        //Create a background for the profile
-        const background = new PIXI.Graphics();
-        const backgroundFilter = new PIXI.NoiseFilter(
-          fish.background.noise.noise,
-          fish.background.noise.seed
-        );
-        background.beginFill(fish.background.color);
-        background.drawRect(0, 0, app.view.width, app.view.height);
-        background.filters = [backgroundFilter];
+            mainScreen.addChild(mainScreenText);
+            Director.addScene("mainScreen", mainScreen);
+            Director.showScene("mainScreen");
+            let fishCount = 0;
+            fishes.forEach((fish) => {
+                const xPadding = 15;
+                const yPadding = 10;
 
-        // Create a sprite of the fish
-        const sprite = PIXI.Sprite.from(`./img/${fish.sprite.image}`);
-        sprite.scale.set(fish.sprite.scale);
-        sprite.anchor.set(0.5);
-        sprite.x = app.view.width * 0.75;
-        sprite.y = app.view.height / 2;
-        console.log(sprite.scale.y);
-        // fish.sprite.animation(sprite);
+                // Create a button on the main screen for each fish in the fishes array.
+                const button = UI.Button(0, 0, fish.name, { backgroundColor: 0x88BB, textStyle: { fill: 0xFFFFFF, fontSize: 28, fontFamily: "Pixelify Sans" } });
+                button.x =
+                    (app.view.width / fishes.length) * fishCount + button.width * 0.5;
+                button.y = app.view.height - button.height;
+                mainScreen.addChild(button);
+                fishCount += 1;
 
-        const fishText = new PIXI.Container();
-        fishText.y = yPadding;
-        fishText.x = xPadding;
-        const fishTextBackground = new PIXI.Graphics();
-        // Name
+                // Create a scene for each fish's profile
+                const scene = new PIXI.Container();
+                //Create a background for the profile
+                const background = new PIXI.Graphics();
+                const backgroundFilter = new PIXI.NoiseFilter(
+                    fish.background.noise.noise,
+                    fish.background.noise.seed
+                );
+                background.beginFill(fish.background.color);
+                background.drawRect(0, 0, app.view.width, app.view.height);
+                background.filters = [backgroundFilter];
 
-        const fishName = new PIXI.Container();
-        const nameLabel = new PIXI.Text("Name:", {
-          fill: 0xffffff,
-          fontSize: 16,
-          fontStyle: "bold",
-        });
-        const name = new PIXI.Text(fish.name, {
-          fill: 0xffffff,
-          fontSize: 16,
-        });
-        name.y = nameLabel.height;
-        fishName.addChild(nameLabel);
-        fishName.addChild(name);
+                // Create a sprite of the fish
+                const sprite = PIXI.Sprite.from(`./img/${fish.sprite.image}`);
+                sprite.scale.set(fish.sprite.scale);
+                sprite.anchor.set(0.5);
+                sprite.x = app.view.width * 0.75;
+                sprite.y = app.view.height / 2;
+                console.log(sprite.scale.y);
+                fish.sprite.animation(sprite);
 
-        //Species
-        const fishSpecies = new PIXI.Container();
-        const speciesLabel = new PIXI.Text("Species:", {
-          fill: 0xffffff,
-          fontSize: 16,
-          fontStyle: "bold",
-        });
-        const common = new PIXI.Text(fish.species.common, {
-          fill: 0xffffff,
-          fontSize: 16,
-        });
-        const scientific = new PIXI.Text(`(${fish.species.scientific})`, {
-          fill: 0xffffff,
-          fontSize: 16,
-          fontStyle: "italic",
-        });
-        common.y = speciesLabel.height;
-        scientific.y = common.height + scientific.height;
-        fishSpecies.addChild(speciesLabel);
-        fishSpecies.addChild(common);
-        fishSpecies.addChild(scientific);
+                const fishText = new PIXI.Container();
 
-        const fishDescription = new PIXI.Container();
-        const descriptionLabel = new PIXI.Text("Description:", {
-          fill: 0xffffff,
-          fontSize: 16,
-          fontStyle: "bold",
-        });
-        const description = new PIXI.Text(fish.description, {
-          fill: 0xffffff,
-          fontSize: 16,
-          wordWrap: true,
-          wordWrapWidth: app.view.width * 0.4,
-        });
-        fishDescription.addChild(descriptionLabel);
-        fishDescription.addChild(description);
-        description.y = descriptionLabel.height;
+                fishText.y = yPadding;
+                fishText.x = xPadding;
+                const fishTextBackground = new PIXI.Graphics();
+                // Name
 
-        const backButton = UI.Button(0, 0, "<< Back");
-        backButton.y = app.view.height - backButton.height;
+                const fishName = new PIXI.Container();
+                const nameLabel = new PIXI.Text("Name:", {
+                    fill: 0xffffff,
+                    fontSize: 16,
+                    fontStyle: "bold",
+                });
+                const name = new PIXI.Text(fish.name, {
+                    fill: 0xffffff,
+                    fontSize: 16,
+                });
+                name.y = nameLabel.height;
+                fishName.addChild(nameLabel);
+                fishName.addChild(name);
 
-        fishName.y = yPadding;
-        fishSpecies.y = fishName.y + fishName.height + yPadding;
-        fishDescription.y = fishSpecies.y + fishSpecies.height + yPadding;
-        Director.addScene(fish.name, scene);
-        // Adding click listeners to buttons
-        button.onclick = () => {
-          Director.showScene(fish.name, {
-            transition: Director.fade,
-          });
-        };
+                //Species
+                const fishSpecies = new PIXI.Container();
+                const speciesLabel = new PIXI.Text("Species:", {
+                    fill: 0xffffff,
+                    fontSize: 16,
+                    fontStyle: "bold",
+                });
+                const common = new PIXI.Text(fish.species.common, {
+                    fill: 0xffffff,
+                    fontSize: 16,
+                });
+                const scientific = new PIXI.Text(`(${fish.species.scientific})`, {
+                    fill: 0xffffff,
+                    fontSize: 16,
+                    fontStyle: "italic",
+                });
+                common.y = speciesLabel.height;
+                scientific.y = common.height + scientific.height;
+                fishSpecies.addChild(speciesLabel);
+                fishSpecies.addChild(common);
+                fishSpecies.addChild(scientific);
 
-        backButton.onclick = () => {
-          Director.showScene("mainScreen", {
-            transition: Director.swipe,
-          });
-        };
-        scene.addChild(background);
-        scene.addChild(backButton);
-        fishText.addChild(fishName);
-        fishText.addChild(fishSpecies);
-        fishText.addChild(fishDescription);
-        scene.addChild(fishText);
-        scene.addChild(sprite);
-      });
+                const fishDescription = new PIXI.Container();
+                const descriptionLabel = new PIXI.Text("Description:", {
+                    fill: 0xffffff,
+                    fontSize: 16,
+                    fontStyle: "bold",
+                });
+                const description = new PIXI.Text(fish.description, {
+                    fill: 0xffffff,
+                    fontSize: 16,
+                    wordWrap: true,
+                    wordWrapWidth: app.view.width * 0.4,
+                });
+                fishDescription.addChild(descriptionLabel);
+                fishDescription.addChild(description);
+                description.y = descriptionLabel.height;
 
-      // mainScreen.addChild(fish1Button);
-      // mainScreen.addChild(fish2Button);
-      // mainScreen.addChild(fish3Button);
-      //Now let's add the first scene to the stage
-      // app.stage.addChild(mainScreen);
+                const backButton = UI.Button(0, 0, "<< Back");
+                backButton.y = app.view.height - backButton.height;
 
-      // Adding scenes to the director
-      // Director.addScene("first", scene1);
-      // Director.addScene("second", scene2);
+                fishName.y = yPadding;
+                fishSpecies.y = fishName.y + fishName.height + yPadding;
+                fishDescription.y = fishSpecies.y + fishSpecies.height + yPadding;
+                Director.addScene(fish.name, scene);
+                // Adding click listeners to buttons
+                button.onclick = () => {
+                    Director.showScene(fish.name, {
+                        transition: Director.fade,
+                    });
+                };
 
-      // Adding event listeners to scene UI elements.
-      // nextButton.onclick = () => {
-      //     Director.showScene("second", { transition: Director.swipe, direction: "topleft" });
-      // };
+                backButton.onclick = () => {
+                    Director.showScene("mainScreen", {
+                        transition: Director.swipe,
+                    });
+                };
 
-      // backButton.onclick = () => {
-      //     Director.showScene("first", { transition: Director.swipe, direction: "topleft" });
-      // }
+                scene.addChild(background);
 
-      /*
-                This week's homework!
-        
-                Accept the assignment invite for Meet The Fish (when it goes up).
-        
-                Put together a multi-scened presentation to show off fictional profiles of 3 of *your* fish. (Replace the ones in the images folder here.)
-        
-                (Read up on the Graphics and Text display objects here:)
-                
-                    https://pixijs.download/dev/docs/PIXI.Graphics.html
-                    https://pixijs.download/dev/docs/PIXI.Text.html
-                
-                (They will help.)
-                
-                Each fish should be animated on their profile page in their own unique way.
-                
-                There should be – at least – a title screen, and one screen for each fish but bonus points for adding on more.
-        
-                Add to the button system so that the buttons look more aesthetic.
-        
-                Add in a new transition of your choice and implement it on one of your transitions.
-        
-            */
-    </script>
-  </body>
+                const textBackground = new PIXI.Graphics();
+                textBackground.beginFill(0x000000);
+                textBackground.drawRoundedRect(0, 0, app.view.width / 2 - 2 * xPadding, app.view.height - 2 * xPadding);
+                fishText.addChild(textBackground);
+                fishText.addChild(fishName);
+                fishText.addChild(fishSpecies);
+                fishText.addChild(fishDescription);
+
+                scene.addChild(fishText);
+                scene.addChild(backButton);
+                scene.addChild(sprite);
+            });
+            async function mainScreenTextBehavior() {
+                await Animate.to(mainScreenText, {
+                    y: mainScreenText.y + 10,
+                    duration: 1000,
+                    easing: Animate.easeInOut
+                });
+                await Animate.to(mainScreenText, {
+                    y: mainScreenText.y - 10,
+                    duration: 1000,
+                    easing: Animate.easeInOut
+                });
+                requestAnimationFrame(mainScreenTextBehavior);
+            }
+            mainScreenTextBehavior();
+            // mainScreen.addChild(fish1Button);
+            // mainScreen.addChild(fish2Button);
+            // mainScreen.addChild(fish3Button);
+            //Now let's add the first scene to the stage
+            // app.stage.addChild(mainScreen);
+
+            // Adding scenes to the director
+            // Director.addScene("first", scene1);
+            // Director.addScene("second", scene2);
+
+            // Adding event listeners to scene UI elements.
+            // nextButton.onclick = () => {
+            //     Director.showScene("second", { transition: Director.swipe, direction: "topleft" });
+            // };
+
+            // backButton.onclick = () => {
+            //     Director.showScene("first", { transition: Director.swipe, direction: "topleft" });
+            // }
+
+            /*
+                      This week's homework!
+              
+                      Accept the assignment invite for Meet The Fish (when it goes up).
+              
+                      Put together a multi-scened presentation to show off fictional profiles of 3 of *your* fish. (Replace the ones in the images folder here.)
+              
+                      (Read up on the Graphics and Text display objects here:)
+                      
+                          https://pixijs.download/dev/docs/PIXI.Graphics.html
+                          https://pixijs.download/dev/docs/PIXI.Text.html
+                      
+                      (They will help.)
+                      
+                      Each fish should be animated on their profile page in their own unique way.
+                      
+                      There should be – at least – a title screen, and one screen for each fish but bonus points for adding on more.
+              
+                      Add to the button system so that the buttons look more aesthetic.
+              
+                      Add in a new transition of your choice and implement it on one of your transitions.
+              
+                  */
+        </script>
+    </body>
+
 </html>

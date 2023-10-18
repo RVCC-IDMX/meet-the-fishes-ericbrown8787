@@ -62,19 +62,19 @@ const fishes = [
       image: "fish3.png",
       scale: 0.2,
       animation: async function (fishSprite) {
-        await Animate.to(fishSprite, {
-          scale: { x: 25, y: 25 },
-        });
-        // await Animate.to(fish, {
-        //   y: fish.y + 25,
-        //   duration: Math.random() * 500 + 250,
-        //   easing: Animate.easeInOut,
+        // await Animate.to(fishSprite, {
+        //   scale: { x: 25, y: 25 },
         // });
-        // await Animate.to(fish, {
-        //   y: fish.y - 25,
-        //   duration: Math.random() * 500 + 250,
-        //   easing: Animate.easeInOut,
-        // });
+        // // await Animate.to(fish, {
+        // //   y: fish.y + 25,
+        // //   duration: Math.random() * 500 + 250,
+        // //   easing: Animate.easeInOut,
+        // // });
+        // // await Animate.to(fish, {
+        // //   y: fish.y - 25,
+        // //   duration: Math.random() * 500 + 250,
+        // //   easing: Animate.easeInOut,
+        // // });
 
         requestAnimationFrame(arguments.callee);
       },
