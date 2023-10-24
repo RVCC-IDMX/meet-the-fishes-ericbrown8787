@@ -17,6 +17,30 @@ async function bob(fish) {
   });
 }
 
+async function pace(fish) {
+
+  await Animate.to(fish, {
+    scale: { x: fish.scale.x * -1, y: fish.scale.y },
+    duration: 100
+  });
+  await Animate.to(fish, {
+    x: app.view.width * .75 + 50,
+    duration: 500,
+    easing: Animate.easeOut,
+  });
+  await Animate.to(fish, {
+    scale: { x: Math.abs(fish.scale.x), y: fish.scale.y },
+    duration: 100,
+  });
+  await Animate.to(fish, {
+    x: app.view.width * .75 - 50,
+    duration: 500,
+    easing: Animate.easeOut,
+  });
+
+}
+
+
 
 
 const fishes = [
@@ -55,7 +79,7 @@ const fishes = [
     sprite: {
       image: "fish3.png",
       scale: 0.2,
-      animation: bob
+      animation: pace
     },
     species: {
       common: "Abyssal Shrieker",
