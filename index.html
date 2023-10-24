@@ -92,7 +92,11 @@
                 sprite.x = app.view.width * 0.75;
                 sprite.y = app.view.height / 2;
                 console.log(sprite.scale.y);
-                fish.sprite.animation(sprite);
+                //sprite.animation = fish.sprite.animation;
+                if (fish.sprite.animation) {
+                    Animate.bindAnimation(fish.sprite.animation, sprite);
+                }
+
 
                 const fishText = new PIXI.Container();
 
@@ -190,11 +194,13 @@
             async function mainScreenTextBehavior() {
                 await Animate.to(mainScreenText, {
                     y: mainScreenText.y + 10,
+                    // scale: { x: mainScreenText.scale.x * 1.1, y: mainScreenText.scale.y * 1.1 },
                     duration: 1000,
                     easing: Animate.easeInOut
                 });
                 await Animate.to(mainScreenText, {
                     y: mainScreenText.y - 10,
+                    // scale: { x: mainScreenText.scale.x / 1.1, y: mainScreenText.scale.y / 1.1 },
                     duration: 1000,
                     easing: Animate.easeInOut
                 });

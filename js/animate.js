@@ -12,6 +12,15 @@ Animate.easeOut = (x) => 1 - (1 - x) * (1 - x);
 Animate.easeInOut = (x) =>
   x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
 
+// Create a function to bind animations to specific anonymous dynamically created PIXI containers and subclasses
+Animate.bindAnimation = function (animation, target) {
+  const boundFunction = animation.bind(animation, target);
+  const boundAnimation = async () => {
+    await boundFunction();
+    requestAnimationFrame(boundAnimation);
+  };
+  boundAnimation();
+};
 //Animate to
 Animate.to = function (obj, end) {
   //Make it a promise:

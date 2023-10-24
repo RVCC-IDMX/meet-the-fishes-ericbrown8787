@@ -1,24 +1,31 @@
 // Just storing info on each fish in a JS file for easy reference
+// async function animation1 (){
+
+// }
+
+// predefining some animation functions for each fish
+async function bob(fish) {
+  await Animate.to(fish, {
+    y: fish.y + 25,
+    duration: 500,
+    easing: Animate.easeInOut,
+  });
+  await Animate.to(fish, {
+    y: fish.y - 25,
+    duration: 500,
+    easing: Animate.easeInOut,
+  });
+}
+
+
+
 const fishes = [
   {
     name: "inky",
     sprite: {
       image: "fish1.png",
       scale: 0.15,
-      animation: async function (fish) {
-        // await Animate.to(fish, {
-        //   y: fish.y + 25,
-        //   duration: Math.random() * 500 + 250,
-        //   easing: Animate.easeInOut,
-        // });
-        // await Animate.to(fish, {
-        //   y: fish.y - 25,
-        //   duration: Math.random() * 500 + 250,
-        //   easing: Animate.easeInOut,
-        // });
-
-        requestAnimationFrame(arguments.callee);
-      },
+      animation: bob,
     },
     species: {
       common: "Buoyant Aether Gulper",
@@ -33,20 +40,7 @@ const fishes = [
     sprite: {
       image: "fish2.png",
       scale: 0.3,
-      animation: async function (fish) {
-        // await Animate.to(fish, {
-        //   y: fish.y + 25,
-        //   duration: Math.random() * 500,
-        //   easing: Animate.easeInOut,
-        // });
-        // await Animate.to(fish, {
-        //   y: fish.y - 25,
-        //   duration: Math.random() * 500 + 250,
-        //   easing: Animate.easeInOut,
-        // });
-
-        requestAnimationFrame(arguments.callee);
-      },
+      animation: bob
     },
     species: {
       common: "Plane-Hopping Singleton",
@@ -61,23 +55,7 @@ const fishes = [
     sprite: {
       image: "fish3.png",
       scale: 0.2,
-      animation: async function (fishSprite) {
-        // await Animate.to(fishSprite, {
-        //   scale: { x: 25, y: 25 },
-        // });
-        // // await Animate.to(fish, {
-        // //   y: fish.y + 25,
-        // //   duration: Math.random() * 500 + 250,
-        // //   easing: Animate.easeInOut,
-        // // });
-        // // await Animate.to(fish, {
-        // //   y: fish.y - 25,
-        // //   duration: Math.random() * 500 + 250,
-        // //   easing: Animate.easeInOut,
-        // // });
-
-        requestAnimationFrame(arguments.callee);
-      },
+      animation: bob
     },
     species: {
       common: "Abyssal Shrieker",
