@@ -64,6 +64,8 @@
       // Create each fish's screen and create navigation buttons on the main screen
       let fishCount = 0;
       fishes.forEach((fish) => {
+        const profileFontSize = 22;
+        const profileLetterSpacing = 0;
         const xPadding = 15;
         const yPadding = 10;
 
@@ -78,7 +80,7 @@
         });
         button.x =
           (app.view.width / fishes.length) * fishCount + button.width * 0.5;
-        button.y = app.view.height - button.height;
+        button.y = app.view.height - button.height - yPadding;
         mainScreen.addChild(button);
         fishCount += 1;
 
@@ -116,13 +118,15 @@
         const fishName = new PIXI.Container();
         const nameLabel = new PIXI.Text('Name:', {
           fill: 0xffffff,
-          fontSize: 16,
+          fontSize: profileFontSize,
           fontStyle: 'bold',
+          letterSpacing: profileLetterSpacing,
           fontFamily: 'Pixelify Sans',
         });
         const name = new PIXI.Text(fish.name, {
           fill: 0xffffff,
-          fontSize: 16,
+          letterSpacing: profileLetterSpacing,
+          fontSize: profileFontSize,
           fontFamily: 'Pixelify Sans',
         });
         name.y = nameLabel.height;
@@ -133,18 +137,21 @@
         const fishSpecies = new PIXI.Container();
         const speciesLabel = new PIXI.Text('Species:', {
           fill: 0xffffff,
-          fontSize: 16,
+          fontSize: profileFontSize,
+          letterSpacing: profileLetterSpacing,
           fontStyle: 'bold',
           fontFamily: 'Pixelify Sans',
         });
         const common = new PIXI.Text(fish.species.common, {
           fill: 0xffffff,
-          fontSize: 16,
+          fontSize: profileFontSize,
+          letterSpacing: profileLetterSpacing,
           fontFamily: 'Pixelify Sans',
         });
         const scientific = new PIXI.Text(`(${fish.species.scientific})`, {
           fill: 0xffffff,
-          fontSize: 16,
+          fontSize: profileFontSize,
+          letterSpacing: profileLetterSpacing,
           fontStyle: 'italic',
           fontFamily: 'Pixelify Sans',
         });
@@ -157,13 +164,15 @@
         const fishDescription = new PIXI.Container();
         const descriptionLabel = new PIXI.Text('Description:', {
           fill: 0xffffff,
-          fontSize: 16,
+          fontSize: profileFontSize,
+          letterSpacing: profileLetterSpacing,
           fontStyle: 'bold',
           fontFamily: 'Pixelify Sans',
         });
         const description = new PIXI.Text(fish.description, {
           fill: 0xffffff,
-          fontSize: 16,
+          fontSize: profileFontSize,
+          letterSpacing: profileLetterSpacing,
           wordWrap: true,
           wordWrapWidth: app.view.width * 0.4,
           fontFamily: 'Pixelify Sans',
@@ -173,7 +182,8 @@
         description.y = descriptionLabel.height;
 
         const backButton = UI.Button(0, 0, '<< Back');
-        backButton.y = app.view.height - backButton.height;
+        backButton.y = app.view.height - backButton.height - yPadding;
+        backButton.x = app.view.width - backButton.width - xPadding;
 
         fishName.y = yPadding;
         fishSpecies.y = fishName.y + fishName.height + yPadding;
@@ -202,6 +212,9 @@
           app.view.width / 2 - 2 * xPadding,
           app.view.height - 2 * xPadding
         );
+        fishName.x += xPadding;
+        fishSpecies.x += xPadding;
+        fishDescription.x += xPadding;
         fishText.addChild(textBackground);
         fishText.addChild(fishName);
         fishText.addChild(fishSpecies);
@@ -248,26 +261,26 @@
 
       /*
                       This week's homework!
-              
+
                       Accept the assignment invite for Meet The Fish (when it goes up).
-              
+
                       Put together a multi-scened presentation to show off fictional profiles of 3 of *your* fish. (Replace the ones in the images folder here.)
-              
+
                       (Read up on the Graphics and Text display objects here:)
-                      
+
                           https://pixijs.download/dev/docs/PIXI.Graphics.html
                           https://pixijs.download/dev/docs/PIXI.Text.html
-                      
+
                       (They will help.)
-                      
+
                       Each fish should be animated on their profile page in their own unique way.
-                      
+
                       There should be – at least – a title screen, and one screen for each fish but bonus points for adding on more.
-              
+
                       Add to the button system so that the buttons look more aesthetic.
-              
+
                       Add in a new transition of your choice and implement it on one of your transitions.
-              
+
                   */
     </script>
   </body>
