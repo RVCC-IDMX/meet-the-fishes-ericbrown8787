@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -13,12 +14,9 @@
         We could also do this the JavaScript Module route, but we'll learn about that later.
 
     -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Pixelify+Sans&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <script src="https://pixijs.download/release/pixi.js"></script>
     <script src="js/director.js"></script>
     <script src="js/bezier.js"></script>
@@ -32,12 +30,19 @@
       //
       // Basic setup
       //
+      const mainFont = 'VT323';
+      const profileFontSize = 26;
+      const profileHeadingFontSize = 34;
+      const profileLetterSpacing = 0;
+      const xPadding = 15;
+      const yPadding = 20;
+      const profileYPadding = 8;
 
       //The App
       var app = new PIXI.Application({
         width: 640,
         height: 480,
-        backgroundColor: 0x000000,
+        backgroundColor: 0x550088,
       });
       //Fix, or at least improve blurry text
       PIXI.settings.ROUND_PIXELS = true;
@@ -49,10 +54,62 @@
       // Just storing info on each fish in a JS file for easy reference
 
       const mainScreen = new PIXI.Container();
+      const background = new PIXI.Graphics();
+      const backgroundNoise = new PIXI.NoiseFilter(4, 300);
+      background.beginFill(0x550088);
+      background.alpha = .2;
+      background.drawRect(0, 0, app.renderer.width, app.renderer.height);
+      // background.alpha = .1;
+      background.filters = [backgroundNoise];
+      mainScreen.addChild(background);
+
+      // Add bubbler
+      // const bubbler = new Bubbler();
+      const bubblePool = new PIXI.Container();
+      bubblePool.x = 50;
+      bubblePool.y = 500;
+      const bubbleNoise = new PIXI.NoiseFilter(.8, 3);
+      for (let i = 0; i < 50; i++) {
+        const bubble = new PIXI.Graphics();
+        bubble.filters = [bubbleNoise];
+        bubble.x = Math.floor(Math.random() * 200);
+        const radius = Math.floor(Math.random() * 15) + 15;
+        bubble.buoyancy = radius / 7;
+        bubble.beginFill(0xDD3366);
+        bubble.drawCircle(0, 0, radius + 1);
+        bubble.beginFill(0xCCAAff);
+        bubble.drawCircle(0, 0, radius);
+        bubble.beginFill(0xEEeeff);
+        bubble.alpha = 0.2;
+        bubble.drawCircle(2, -2, radius - 3);
+        bubble.endFill();
+        bubblePool.addChild(bubble);
+      }
+      function bubbler() {
+        const bubbleBehaviors = bubblePool.children.map(bubble => {
+          return async function () {
+            await Animate.to(bubble, {
+              y: -app.screen.height - 100,
+              duration: 12000 / bubble.buoyancy,
+              easing: Animate.easeIn
+            });
+            bubble.y = Math.floor(Math.random() * 75);
+            bubble.x = Math.floor(Math.random() * 200);
+
+            // I didn't even know arguments.callee existed before this
+            requestAnimationFrame(arguments.callee);
+          };
+        });
+
+        bubbleBehaviors.forEach(fun => fun());
+      }
+      mainScreen.addChild(bubblePool);
+      bubbler();
+
       const mainScreenText = new PIXI.Text('Meet The Fishes', {
         fill: 0xffffff,
-        fontSize: 50,
-        fontFamily: 'Pixelify Sans',
+        fontSize: 90,
+        fontFamily: mainFont,
       });
       mainScreenText.x = app.view.width / 2 - mainScreenText.width / 2;
       mainScreenText.y = app.view.height / 2 - mainScreenText.height;
@@ -64,22 +121,20 @@
       // Create each fish's screen and create navigation buttons on the main screen
       let fishCount = 0;
       fishes.forEach((fish) => {
-        const profileFontSize = 22;
-        const profileLetterSpacing = 0;
-        const xPadding = 15;
-        const yPadding = 10;
 
         // Create a button on the main screen for each fish in the fishes array.
         const button = UI.Button(0, 0, fish.name, {
           backgroundColor: 0x88bb,
           textStyle: {
             fill: 0xffffff,
-            fontSize: 28,
-            fontFamily: 'Pixelify Sans',
+            fontSize: 26,
+            fontFamily: mainFont,
+            wordWrap: true,
+            wordWrapWidth: 150,
           },
         });
         button.x =
-          (app.view.width / fishes.length) * fishCount + button.width * 0.5;
+          (app.view.width / fishes.length) * fishCount + button.width * .5 / fishes.length;
         button.y = app.view.height - button.height - yPadding;
         mainScreen.addChild(button);
         fishCount += 1;
@@ -118,18 +173,17 @@
         const fishName = new PIXI.Container();
         const nameLabel = new PIXI.Text('Name:', {
           fill: 0xffffff,
-          fontSize: profileFontSize,
-          fontStyle: 'bold',
+          fontSize: profileHeadingFontSize,
           letterSpacing: profileLetterSpacing,
-          fontFamily: 'Pixelify Sans',
+          fontFamily: mainFont,
         });
         const name = new PIXI.Text(fish.name, {
           fill: 0xffffff,
           letterSpacing: profileLetterSpacing,
           fontSize: profileFontSize,
-          fontFamily: 'Pixelify Sans',
+          fontFamily: mainFont,
         });
-        name.y = nameLabel.height;
+        name.y = nameLabel.height + profileYPadding;
         fishName.addChild(nameLabel);
         fishName.addChild(name);
 
@@ -137,26 +191,25 @@
         const fishSpecies = new PIXI.Container();
         const speciesLabel = new PIXI.Text('Species:', {
           fill: 0xffffff,
-          fontSize: profileFontSize,
+          fontSize: profileHeadingFontSize,
           letterSpacing: profileLetterSpacing,
-          fontStyle: 'bold',
-          fontFamily: 'Pixelify Sans',
+          fontFamily: mainFont,
         });
         const common = new PIXI.Text(fish.species.common, {
           fill: 0xffffff,
           fontSize: profileFontSize,
           letterSpacing: profileLetterSpacing,
-          fontFamily: 'Pixelify Sans',
+          fontFamily: mainFont,
         });
         const scientific = new PIXI.Text(`(${fish.species.scientific})`, {
           fill: 0xffffff,
           fontSize: profileFontSize,
           letterSpacing: profileLetterSpacing,
           fontStyle: 'italic',
-          fontFamily: 'Pixelify Sans',
+          fontFamily: mainFont,
         });
-        common.y = speciesLabel.height;
-        scientific.y = common.height + scientific.height;
+        common.y = speciesLabel.height + profileYPadding;
+        scientific.y = common.height + scientific.height + 2 * profileYPadding;
         fishSpecies.addChild(speciesLabel);
         fishSpecies.addChild(common);
         fishSpecies.addChild(scientific);
@@ -164,10 +217,9 @@
         const fishDescription = new PIXI.Container();
         const descriptionLabel = new PIXI.Text('Description:', {
           fill: 0xffffff,
-          fontSize: profileFontSize,
+          fontSize: profileHeadingFontSize,
           letterSpacing: profileLetterSpacing,
-          fontStyle: 'bold',
-          fontFamily: 'Pixelify Sans',
+          fontFamily: mainFont,
         });
         const description = new PIXI.Text(fish.description, {
           fill: 0xffffff,
@@ -175,13 +227,22 @@
           letterSpacing: profileLetterSpacing,
           wordWrap: true,
           wordWrapWidth: app.view.width * 0.4,
-          fontFamily: 'Pixelify Sans',
+          fontFamily: mainFont,
         });
         fishDescription.addChild(descriptionLabel);
         fishDescription.addChild(description);
-        description.y = descriptionLabel.height;
+        description.y = descriptionLabel.height + profileYPadding;
 
-        const backButton = UI.Button(0, 0, '<< Back');
+        const backButton = UI.Button(0, 0, '<< Back', {
+          backgroundColor: 0x663322,
+          textStyle: {
+            fill: 0xffffff,
+            fontSize: 26,
+            fontFamily: mainFont,
+            wordWrap: true,
+            wordWrapWidth: 150,
+          }
+        });
         backButton.y = app.view.height - backButton.height - yPadding;
         backButton.x = app.view.width - backButton.width - xPadding;
 
@@ -240,24 +301,6 @@
         requestAnimationFrame(mainScreenTextBehavior);
       }
       mainScreenTextBehavior();
-      // mainScreen.addChild(fish1Button);
-      // mainScreen.addChild(fish2Button);
-      // mainScreen.addChild(fish3Button);
-      //Now let's add the first scene to the stage
-      // app.stage.addChild(mainScreen);
-
-      // Adding scenes to the director
-      // Director.addScene("first", scene1);
-      // Director.addScene("second", scene2);
-
-      // Adding event listeners to scene UI elements.
-      // nextButton.onclick = () => {
-      //     Director.showScene("second", { transition: Director.swipe, direction: "topleft" });
-      // };
-
-      // backButton.onclick = () => {
-      //     Director.showScene("first", { transition: Director.swipe, direction: "topleft" });
-      // }
 
       /*
                       This week's homework!
@@ -284,4 +327,5 @@
                   */
     </script>
   </body>
+
 </html>

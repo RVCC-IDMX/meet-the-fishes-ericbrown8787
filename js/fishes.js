@@ -53,7 +53,7 @@ async function pace(fish) {
 
 const fishes = [
   {
-    name: 'inky',
+    name: 'Krumbo Bodorp',
     sprite: {
       image: 'fish1.png',
       scale: 0.15,
@@ -68,7 +68,7 @@ const fishes = [
     background: { color: 0x234030, noise: { noise: 0.67, seed: 60 } },
   },
   {
-    name: 'blinky',
+    name: 'Slorpo Jumb',
     sprite: {
       image: 'fish2.png',
       scale: 0.3,
@@ -83,10 +83,10 @@ const fishes = [
     background: { color: 0x1159ff, noise: { noise: 0.4, seed: 180 } },
   },
   {
-    name: 'clyde',
+    name: 'Jeff',
     sprite: {
       image: 'fish3.png',
-      scale: 0.2,
+      scale: 0.15,
       animation: pace,
     },
     species: {
@@ -95,6 +95,6 @@ const fishes = [
     },
     description:
       "This fish is cursed with knowledge of the invisible barrier that separates our world from its own. Vibrations in this barrier briefly attract the fish's attention, and with it, its rage.",
-    background: { color: 0x1159ff, noise: { noise: 0.5, seed: 180 } },
+    background: { color: 0xAA3311, noise: { noise: .1, seed: 180 } },
   },
 ];
