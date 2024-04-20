@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -14,10 +13,13 @@
         We could also do this the JavaScript Module route, but we'll learn about that later.
 
     -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <script src="https://pixijs.download/release/pixi.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/pixi.js@7.x/dist/pixi.min.js"></script>
     <script src="js/director.js"></script>
     <script src="js/bezier.js"></script>
     <script src="js/animate.js"></script>
@@ -30,7 +32,7 @@
       //
       // Basic setup
       //
-      const mainFont = 'VT323';
+      const mainFont = "VT323";
       const profileFontSize = 26;
       const profileHeadingFontSize = 34;
       const profileLetterSpacing = 0;
@@ -57,7 +59,7 @@
       const background = new PIXI.Graphics();
       const backgroundNoise = new PIXI.NoiseFilter(4, 300);
       background.beginFill(0x550088);
-      background.alpha = .2;
+      background.alpha = 0.2;
       background.drawRect(0, 0, app.renderer.width, app.renderer.height);
       // background.alpha = .1;
       background.filters = [backgroundNoise];
@@ -68,30 +70,30 @@
       const bubblePool = new PIXI.Container();
       bubblePool.x = 50;
       bubblePool.y = 500;
-      const bubbleNoise = new PIXI.NoiseFilter(.8, 3);
+      const bubbleNoise = new PIXI.NoiseFilter(0.8, 3);
       for (let i = 0; i < 50; i++) {
         const bubble = new PIXI.Graphics();
         bubble.filters = [bubbleNoise];
         bubble.x = Math.floor(Math.random() * 200);
         const radius = Math.floor(Math.random() * 15) + 15;
         bubble.buoyancy = radius / 7;
-        bubble.beginFill(0xDD3366);
+        bubble.beginFill(0xdd3366);
         bubble.drawCircle(0, 0, radius + 1);
-        bubble.beginFill(0xCCAAff);
+        bubble.beginFill(0xccaaff);
         bubble.drawCircle(0, 0, radius);
-        bubble.beginFill(0xEEeeff);
+        bubble.beginFill(0xeeeeff);
         bubble.alpha = 0.2;
         bubble.drawCircle(2, -2, radius - 3);
         bubble.endFill();
         bubblePool.addChild(bubble);
       }
       function bubbler() {
-        const bubbleBehaviors = bubblePool.children.map(bubble => {
+        const bubbleBehaviors = bubblePool.children.map((bubble) => {
           return async function () {
             await Animate.to(bubble, {
               y: -app.screen.height - 100,
               duration: 12000 / bubble.buoyancy,
-              easing: Animate.easeIn
+              easing: Animate.easeIn,
             });
             bubble.y = Math.floor(Math.random() * 75);
             bubble.x = Math.floor(Math.random() * 200);
@@ -101,12 +103,12 @@
           };
         });
 
-        bubbleBehaviors.forEach(fun => fun());
+        bubbleBehaviors.forEach((fun) => fun());
       }
       mainScreen.addChild(bubblePool);
       bubbler();
 
-      const mainScreenText = new PIXI.Text('Meet The Fishes', {
+      const mainScreenText = new PIXI.Text("Meet The Fishes", {
         fill: 0xffffff,
         fontSize: 90,
         fontFamily: mainFont,
@@ -115,13 +117,12 @@
       mainScreenText.y = app.view.height / 2 - mainScreenText.height;
 
       mainScreen.addChild(mainScreenText);
-      Director.addScene('mainScreen', mainScreen);
-      Director.showScene('mainScreen');
+      Director.addScene("mainScreen", mainScreen);
+      Director.showScene("mainScreen");
 
       // Create each fish's screen and create navigation buttons on the main screen
       let fishCount = 0;
       fishes.forEach((fish) => {
-
         // Create a button on the main screen for each fish in the fishes array.
         const button = UI.Button(0, 0, fish.name, {
           backgroundColor: 0x88bb,
@@ -134,7 +135,8 @@
           },
         });
         button.x =
-          (app.view.width / fishes.length) * fishCount + button.width * .5 / fishes.length;
+          (app.view.width / fishes.length) * fishCount +
+          (button.width * 0.5) / fishes.length;
         button.y = app.view.height - button.height - yPadding;
         mainScreen.addChild(button);
         fishCount += 1;
@@ -171,7 +173,7 @@
         // Name
 
         const fishName = new PIXI.Container();
-        const nameLabel = new PIXI.Text('Name:', {
+        const nameLabel = new PIXI.Text("Name:", {
           fill: 0xffffff,
           fontSize: profileHeadingFontSize,
           letterSpacing: profileLetterSpacing,
@@ -189,7 +191,7 @@
 
         //Species
         const fishSpecies = new PIXI.Container();
-        const speciesLabel = new PIXI.Text('Species:', {
+        const speciesLabel = new PIXI.Text("Species:", {
           fill: 0xffffff,
           fontSize: profileHeadingFontSize,
           letterSpacing: profileLetterSpacing,
@@ -205,7 +207,7 @@
           fill: 0xffffff,
           fontSize: profileFontSize,
           letterSpacing: profileLetterSpacing,
-          fontStyle: 'italic',
+          fontStyle: "italic",
           fontFamily: mainFont,
         });
         common.y = speciesLabel.height + profileYPadding;
@@ -215,7 +217,7 @@
         fishSpecies.addChild(scientific);
 
         const fishDescription = new PIXI.Container();
-        const descriptionLabel = new PIXI.Text('Description:', {
+        const descriptionLabel = new PIXI.Text("Description:", {
           fill: 0xffffff,
           fontSize: profileHeadingFontSize,
           letterSpacing: profileLetterSpacing,
@@ -233,7 +235,7 @@
         fishDescription.addChild(description);
         description.y = descriptionLabel.height + profileYPadding;
 
-        const backButton = UI.Button(0, 0, '<< Back', {
+        const backButton = UI.Button(0, 0, "<< Back", {
           backgroundColor: 0x663322,
           textStyle: {
             fill: 0xffffff,
@@ -241,7 +243,7 @@
             fontFamily: mainFont,
             wordWrap: true,
             wordWrapWidth: 150,
-          }
+          },
         });
         backButton.y = app.view.height - backButton.height - yPadding;
         backButton.x = app.view.width - backButton.width - xPadding;
@@ -258,7 +260,7 @@
         };
 
         backButton.onclick = () => {
-          Director.showScene('mainScreen', {
+          Director.showScene("mainScreen", {
             transition: Director.swipe,
           });
         };
@@ -327,5 +329,4 @@
                   */
     </script>
   </body>
-
 </html>
